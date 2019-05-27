@@ -3,5 +3,5 @@
 
 export default {
     baseUrl: "." ,
-    paths: [ './mock' ]
+    paths: [ "./mock" ]
 }
