@@ -1,4 +1,11 @@
+import Koa from "koa"
 
+console.log( process.cwd() )
 
+const app = new Koa()
 
-console.log( "hello,world" ) ;
+app.use( async ctx => {
+    ctx.body = "Hello World"
+} )
+
+app.listen( 3000 )
