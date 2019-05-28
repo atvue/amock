@@ -1,12 +1,13 @@
 import Koa from "koa"
-import paths from "./paths"
-import { getConfig } from "./config"
-import { getStore } from "./store"
+import { init } from "./store/setup"
+import { cache } from "./store/db"
+
+init()
 
 const app = new Koa()
 app.use( async ctx => {
     if ( ctx.url === `/` ) {
-        getStore()
+        console.log( cache )
     }
     ctx.body = "Hello World"
 } )
