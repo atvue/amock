@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npm run serve",
+    "start": "npm run watch-debug",
     "serve": "node dist/index.js",
     "build": "npm run build-ts && npm run tslint",
     "build-ts": "tsc",
