@@ -68,7 +68,7 @@ const recursiveDir: RecursiveDir = async ( dir: string ) => {
             const files = await walker( dir ) ,
                 rootDirExports = files.length > 0 ? {} : undefined
             for ( const filePath of files ) {
-                const defaultExports = require( filePath )
+                const defaultExports = requireUncached( filePath )
                 Object.assign( rootDirExports , defaultExports )
             }
             return rootDirExports
