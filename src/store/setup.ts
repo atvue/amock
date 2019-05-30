@@ -3,7 +3,7 @@ import { getMockDirs , getJSFileDefaultExports } from "./index"
 import chokidar from "chokidar"
 import { Stats } from "fs"
 
-export const init = async function init() {
+export const initGetCacheAndWatchDir = async function initGetCacheAndWatchDir() {
     await Promise.all( [
         refreshCache() ,
         watchMockDirs() ,

@@ -10,7 +10,7 @@ interface GetConfig {
     (): Promise<Config> | Config
 }
 
-const configFile = "amock.json" ,
+const configFile = "amockrc.js" ,
     { appDirectory } = paths ,
     getDefaultConfig: GetConfig = () => ( {
         baseUrl: "." ,
