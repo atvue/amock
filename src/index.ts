@@ -7,12 +7,14 @@ import KoaBody from "koa-body"
 import KoaStatic from "koa-static"
 import paths from "./paths"
 import path from "path"
+import createUploadDir from "./util/create-upload-dir"
 
 const { amockRoot , uploadDir } = paths
 
 const init = async () => {
     const config = await getConfig()
     await initGetCacheAndWatchDir()
+    await createUploadDir()
     const app = new Koa() ,
         { port } = config ,
         publicPath = path.resolve( amockRoot , "public" )
