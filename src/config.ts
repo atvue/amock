@@ -3,6 +3,7 @@ import path from "path"
 import { fileExist } from "./util/file"
 import { merge } from "lodash"
 export interface Config {
+    port?: number
     baseUrl: string
     paths: string[]
 }
@@ -13,6 +14,7 @@ interface GetConfig {
 const configFile = "amockrc.js" ,
     { appDirectory } = paths ,
     getDefaultConfig: GetConfig = () => ( {
+        port: 8002 ,
         baseUrl: "." ,
         paths: [ "./mock" ]
     } )
