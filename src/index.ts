@@ -8,7 +8,7 @@ import KoaStatic from "koa-static"
 import paths from "./paths"
 import path from "path"
 
-const { amockRoot } = paths
+const { amockRoot , uploadDir } = paths
 
 const init = async () => {
     const config = await getConfig()
@@ -18,7 +18,12 @@ const init = async () => {
         publicPath = path.resolve( amockRoot , "public" )
 
     app.use( setServerHeader( "amock-koa/1.0" ) )
-    app.use( KoaBody() )
+    app.use( KoaBody( {
+        multipart: true ,
+        formidable: {
+            uploadDir ,
+        }
+    } ) )
     app.use( mapMockApi() )
     app.use( KoaStatic( publicPath ) )
 

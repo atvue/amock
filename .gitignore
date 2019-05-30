@@ -38,3 +38,4 @@ dist/**/*
 # 本地测试mock
 mock/**/*
 amock.json
+tmp/
