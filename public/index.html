@@ -9,5 +9,43 @@
     </head>
     <body>
         Amock首页
+        <form action="/upload" method="post" enctype="multipart/form-data" id="form-upload" >
+            <input type="file" name="file" multiple>
+            <input type="submit" value="Upload">
+        </form>
+        <script>
+            var form = document.getElementById("form-upload"); //表单
+            var file = document.getElementsByName("file")[0];
+            form.onsubmit = function () {
+              //如果没有选择文件则不进行上传
+              if (file.value === "") {
+                alert("请先选择文件。");
+                return false;
+              }
+              //创建Ajax对象
+              var xhr = new XMLHttpRequest();
+              //上传进度
+              xhr.upload.onprogress = function (e) {
+                var total = e.total; //数据总大小
+                var loaded = e.loaded; //已经上传的大小
+                var per = Math.floor(loaded / total * 100); //计算百分比
+                console.log( `上传百分比:${per}` )
+              };
+              xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                  if (xhr.status !== 200) {
+                    alert('图片上传失败');
+                  } else {
+                    console.log( `上传成功，服务器返回值` , xhr.response )
+                  }
+                }
+              };
+              //收集表单数据
+              var fd = new FormData(form);
+              xhr.open("post", "/upload");
+              xhr.send(fd);
+              return false; //阻止浏览器的表单提交操作
+            }
+        </script>
     </body>
 </html>
