@@ -4,6 +4,7 @@ import paths from "../paths"
 import path from "path"
 import { Stats } from "fs"
 import requireUncached from "../util/require-uncached"
+import { isPlainObject } from "lodash"
 
 const { appDirectory } = paths
 interface GetMockDirs {
@@ -21,8 +22,10 @@ export interface Mock {
     [path: string]: MockValueObj | Array<any> | MockValueFunc | string | number | boolean
 }
 
+export type FileDefaultExportType = Mock | any // 可能各种类型
+
 interface RecursiveDir {
-    ( dir: string ): Promise< Mock | undefined >
+    ( dir: string ): Promise< FileDefaultExportType >
 }
 
 // 获取mock用户配置的mock目录
@@ -41,7 +44,7 @@ export const getMockDirs: GetMockDirs = async () => {
 }
 
 interface GetJSFileDefaultExports {
-    ( path: string , stat?: Stats ): Promise< Mock | undefined >
+    ( path: string , stat?: Stats ): Promise< [ FileDefaultExportType , FileDefaultExportType ] >
 }
 
 export const getJSFileDefaultExports: GetJSFileDefaultExports = async ( path: string , stat?: Stats ) => {
@@ -52,8 +55,9 @@ export const getJSFileDefaultExports: GetJSFileDefaultExports = async ( path: st
     if ( !isDir ) {
         const isValid = isValidModuleFile( path )
         if ( isValid ) {
+            const prevExports = require( path )
             const defaultExports = requireUncached( path )
-            return defaultExports
+            return [ defaultExports , prevExports ]
         }
     }
     return undefined
@@ -80,24 +84,22 @@ const recursiveDir: RecursiveDir = async ( dir: string ) => {
 }
 
 interface GetStore {
-    (): Promise<Mock>
+    (): Promise<FileDefaultExportType>
 }
 
 // 获取所有的mock数据
 export const getStore: GetStore = async () => {
     try {
         const mockDirs = await getMockDirs() ,
-            promises: Promise<Mock>[] = []
+            promises: Promise<FileDefaultExportType>[] = []
         for ( const mockDir of mockDirs ) {
             const promiseDirExports = recursiveDir( mockDir )
             promises.push( promiseDirExports )
         }
         const storeMocks = await Promise.all( promises ) ,
-            storeMockMap = storeMocks.reduce( ( prev: any , next: Mock ) => {
-                if ( next === undefined ) {
-                    return prev
-                }
-                return Object.assign( prev , next )
+            storeMockMap = storeMocks.reduce( ( prev: any , next: FileDefaultExportType ) => {
+                const isObj = isPlainObject( next )
+                return isObj ? Object.assign( prev , next ) : prev
             } , {} )
         return storeMockMap
     } catch ( e ) {

@@ -1,6 +1,7 @@
-import { Mock , getStore } from "./index"
+import { FileDefaultExportType , getStore } from "./index"
+import { isPlainObject } from "lodash"
 
-export let cache: Mock = {}
+export let cache: FileDefaultExportType = {}
 
 
 export const refreshCache = async () => {
@@ -8,14 +9,26 @@ export const refreshCache = async () => {
     cache = obj
 }
 
-export const updateCache = ( mockItem?: Mock ) => {
-    Object.assign( cache , mockItem )
+export const updateCache = ( mockItem: FileDefaultExportType ) => {
+    const isObj = isPlainObject( mockItem )
+    if ( isObj ) {
+        Object.assign( cache , mockItem )
+    }
 }
 
-export const delSomeCache = ( mockItem?: Mock ) => {
-    const keys = Object.keys( mockItem )
-    for ( const key of keys ) {
-        delete cache[ key ]
+export const delKeyCache = ( delKeys?: string[] ): void => {
+    if ( delKeys !== undefined && delKeys.length > 0 ) {
+        for ( const key of delKeys ) {
+            delete cache[ key ]
+        }
+    }
+}
+
+export const delSomeCache = ( mockItem: FileDefaultExportType ) => {
+    const isObj = isPlainObject( mockItem )
+    if ( isObj ) {
+        const keys = Object.keys( mockItem )
+        delKeyCache( keys )
     }
 }
 
