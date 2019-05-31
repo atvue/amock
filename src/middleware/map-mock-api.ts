@@ -18,6 +18,7 @@ export default () => {
                     await ( value as Function )( request , response )
                     break
             }
+            return
         }
         await next()
     }
