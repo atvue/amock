@@ -1,5 +1,6 @@
 import { Context } from "koa"
 import { cache } from "../store/db"
+import transfer2Accept from "../util/transfer2accept"
 
 
 export default () => {
@@ -12,7 +13,7 @@ export default () => {
             const type = typeof value
             switch ( type ) {
                 case "object":
-                    ctx.body = value
+                    await transfer2Accept( ctx , value )
                     break
                 case "function":
                     await ( value as Function )( request , response )
