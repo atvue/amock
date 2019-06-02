@@ -10,7 +10,6 @@ const json = "application/json" ,
 
 export default async function transfer2Accept( ctx: Context , value: any ) {
     const accept = ctx.accepts( supportedAccept )
-
     switch ( accept ) {
         case json:
             ctx.type = accept

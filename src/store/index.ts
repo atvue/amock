@@ -2,30 +2,36 @@ import { getConfig , Config } from "../config"
 import { stat as statCheck , walker , isValidModuleFile } from "../util/file"
 import paths from "../paths"
 import path from "path"
-import { Stats } from "fs"
+import { Stats, fstat } from "fs"
 import requireUncached from "../util/require-uncached"
 import { isPlainObject } from "lodash"
+import { ENOENT } from "constants"
+import chalk from "chalk"
 
+
+/**
+ * 模型： { modlePath: { ...// mock api } }
+ * [ { module: '' , api: {  } } ]
+ */
 const { appDirectory } = paths
 interface GetMockDirs {
     (): Promise<string[]>
 }
-
-interface MockValueObj {
-    [key: string]: any
-}
-
 interface MockValueFunc {
     ( req: any , res: any ): void
 }
-export interface Mock {
-    [path: string]: MockValueObj | Array<any> | MockValueFunc | string | number | boolean
+
+export interface MockValueObj {
+    [key: string]: any | MockValueFunc
 }
 
-export type FileDefaultExportType = Mock | any // 可能各种类型
+export interface MockModule {
+    moduleId: string
+    api?: MockValueObj
+}
 
 interface RecursiveDir {
-    ( dir: string ): Promise< FileDefaultExportType >
+    ( dir: string ): Promise< MockModule[] >
 }
 
 // 获取mock用户配置的mock目录
@@ -44,7 +50,7 @@ export const getMockDirs: GetMockDirs = async () => {
 }
 
 interface GetJSFileDefaultExports {
-    ( path: string , stat?: Stats ): Promise< [ FileDefaultExportType , FileDefaultExportType ] >
+    ( path: string , stat?: Stats ): Promise< [ MockValueObj , MockValueObj ] | undefined >
 }
 
 export const getJSFileDefaultExports: GetJSFileDefaultExports = async ( path: string , stat?: Stats ) => {
@@ -57,7 +63,10 @@ export const getJSFileDefaultExports: GetJSFileDefaultExports = async ( path: st
         if ( isValid ) {
             const prevExports = require( path )
             const defaultExports = requireUncached( path )
-            return [ defaultExports , prevExports ]
+            return [
+                isPlainObject( defaultExports ) ? defaultExports : {} ,
+                isPlainObject( prevExports ) ? prevExports : {}
+            ]
         }
     }
     return undefined
@@ -70,38 +79,50 @@ const recursiveDir: RecursiveDir = async ( dir: string ) => {
             isDir = dirStat.isDirectory()
         if ( isDir ) {
             const files = await walker( dir ) ,
-                rootDirExports = files.length > 0 ? {} : undefined
+                modules = []
             for ( const filePath of files ) {
-                const defaultExports = requireUncached( filePath )
-                Object.assign( rootDirExports , defaultExports )
+                const moduleStruc: MockModule = {
+                        moduleId: filePath ,
+                        api: undefined ,
+                    }
+                const defaultExports = requireUncached( filePath ) ,
+                    api = isPlainObject( defaultExports ) ? defaultExports : undefined
+                Object.assign( moduleStruc , { api } )
+                modules.push( moduleStruc )
             }
-            return rootDirExports
+            return modules
         }
     } catch ( e ) {
-        console.warn( e )
+        if ( Math.abs( e.errno ) === ENOENT ) {
+            const { path } = e
+            console.log(
+                chalk.red( `mock目录不存在：` , chalk.underline( path ) )
+            )
+        } else {
+            throw e
+        }
     }
-    return undefined
+    return []
 }
 
 interface GetStore {
-    (): Promise<FileDefaultExportType>
+    (): Promise<MockModule[]>
 }
 
 // 获取所有的mock数据
 export const getStore: GetStore = async () => {
     try {
         const mockDirs = await getMockDirs() ,
-            promises: Promise<FileDefaultExportType>[] = []
+            promises: Promise<MockModule[]>[] = []
         for ( const mockDir of mockDirs ) {
             const promiseDirExports = recursiveDir( mockDir )
             promises.push( promiseDirExports )
         }
         const storeMocks = await Promise.all( promises ) ,
-            storeMockMap = storeMocks.reduce( ( prev: any , next: FileDefaultExportType ) => {
-                const isObj = isPlainObject( next )
-                return isObj ? Object.assign( prev , next ) : prev
-            } , {} )
-        return storeMockMap
+            store: MockModule[] = storeMocks.reduce( ( prev: any , next: MockModule[] ) => {
+                return prev.concat( next )
+            } , [] )
+        return store
     } catch ( e ) {
         throw e
     }

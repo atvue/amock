@@ -1,7 +1,6 @@
-import { FileDefaultExportType } from "../store/index"
 import { isPlainObject , difference } from "lodash"
 
-export default ( nextObj: FileDefaultExportType , prevObj: FileDefaultExportType ): string[] => {
+export default ( nextObj: any , prevObj: any ): string[] => {
     const isPrevObj = isPlainObject( prevObj ) ,
         isNextObj = isPlainObject( nextObj ) ,
         prevKeys = isPrevObj ? Object.keys( prevObj ) : [] ,

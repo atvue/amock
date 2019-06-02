@@ -9,6 +9,7 @@ import KoaStatic from "koa-static"
 import paths from "./paths"
 import path from "path"
 import createUploadDir from "./util/create-upload-dir"
+import chalk from "chalk"
 
 const { amockRoot , uploadDir } = paths
 
@@ -37,7 +38,9 @@ const init = async () => {
 
     const url = `http://localhost:${port}`
     app.listen( port , () => {
-        console.log( `Amock启动成功，请访问：${url}` )
+        console.log(
+            chalk.green( `Amock启动成功，请访问：${url}` )
+        )
     } )
 }
 

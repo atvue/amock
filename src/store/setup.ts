@@ -1,4 +1,4 @@
-import { refreshCache , updateCache , delSomeCache , delKeyCache } from "./db"
+import { refreshCache , updateCache , delCache , delKeyCache , cache } from "./db"
 import { getMockDirs , getJSFileDefaultExports } from "./index"
 import chokidar from "chokidar"
 import { Stats } from "fs"
@@ -13,16 +13,14 @@ export const initGetCacheAndWatchDir = async function initGetCacheAndWatchDir() 
 }
 
 async function watchFile( path: string , stats?: Stats ) {
-    const [ obj , prevObj ] = await getJSFileDefaultExports( path , stats ) ,
+    const [ obj , prevObj ] = await getJSFileDefaultExports( path , stats ) || [ undefined , undefined ] ,
         deledkeys = diffKeys( obj , prevObj )
-    updateCache( obj )
-    delKeyCache( deledkeys )
+    updateCache( path , obj )
+    delKeyCache( path , deledkeys )
 }
 
 function delFile ( path: string ) {
-    // 利于require函数的缓存，可以在文件被删之后，获取之前的模块导出内容，进行缓存删除
-    const moduleExports = require( path )
-    delSomeCache( moduleExports )
+    delCache( path )
 }
 
 async function watchMockDirs() {
