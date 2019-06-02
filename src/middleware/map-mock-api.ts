@@ -7,19 +7,21 @@ export default () => {
     return async ( ctx: Context, next: Function ) => {
         const { path , method , request , response } = ctx ,
             key = `${ method } ${ path }` ,
-            value = findApiFromCache( key )
-        const type = typeof value
-        switch ( type ) {
-            case "undefined":
-            case "string":
-            case "object":
-                await transfer2Accept( ctx , value )
-                break
-            case "function":
-                await ( value as Function )( request , response )
-                break
+            [ hasDefinedApi , value ] = findApiFromCache( key )
+        if ( hasDefinedApi ) {
+            const type = typeof value
+            switch ( type ) {
+                case "undefined":
+                case "string":
+                case "object":
+                    await transfer2Accept( ctx , value )
+                    break
+                case "function":
+                    await ( value as Function )( request , response )
+                    break
+            }
+            return
         }
-        return
         await next()
     }
 }

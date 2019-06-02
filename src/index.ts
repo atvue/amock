@@ -32,8 +32,10 @@ const init = async () => {
     app.use( mapMockApi() )
     app.use( KoaStatic( publicPath ) )
 
-    app.on( "error" , err => {
-        console.warn( "Amock Server Error" , err )
+    app.on( "error" , ( err , ctx ) => {
+        console.warn( chalk.red (
+            "Amock Server Error" , err
+        ) )
     } )
 
     const url = `http://localhost:${port}`

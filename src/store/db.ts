@@ -2,17 +2,20 @@ import { MockModule , getStore , MockValueObj } from "./index"
 
 export let cache: MockModule[] = []
 
-export function findApiFromCache( requestMethodPath?: string ): any  {
+type checkIfDefineReturnValue = [ boolean , any? ]
+
+export function findApiFromCache( requestMethodPath?: string ): checkIfDefineReturnValue  {
     const apiList = findAllApis()
     if ( requestMethodPath === undefined ) {
-        return undefined
+        return [ false ]
     }
     for ( const obj of apiList ) {
         const hasOwnKey = obj.hasOwnProperty( requestMethodPath )
         if ( hasOwnKey ) {
-            return obj[ requestMethodPath ]
+            return [ true , obj[ requestMethodPath ] ]
         }
     }
+    return [ false ]
 }
 
 
@@ -65,4 +68,23 @@ export const delCache = ( filePath?: string ) => {
 
 export const clearCache = () => {
     cache = []
+}
+
+function isApiTheModule( obj: MockValueObj | undefined , key: string ): boolean {
+    if ( obj !== undefined && key !== undefined ) {
+        return obj.hasOwnProperty( key )
+    } else {
+        return false
+    }
+}
+
+export const findModuleIdWithRequestKey = ( reqeustKey: string ): string | undefined => {
+    for ( const module of cache ) {
+        const { moduleId , api } = module ,
+            isApiInTheModule = isApiTheModule( api , reqeustKey )
+        if ( isApiInTheModule ) {
+            return moduleId
+        }
+    }
+    return undefined
 }

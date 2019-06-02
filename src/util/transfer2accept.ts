@@ -1,5 +1,7 @@
 import { Context } from "koa"
-import findModuleIdWithRequestKey from "./find-moduleid-with-requestkey"
+import path from "path"
+import fs from "fs"
+import checkRequestImg from "./checkRequestImg"
 
 const json = "application/json" ,
     image = "image/*" ,
@@ -8,8 +10,9 @@ const json = "application/json" ,
     supportedAccept = [ json , html , text , image ]
 
 
-export default async function transfer2Accept( ctx: Context , value: any ) {
+export default async function transfer2Accept( ctx: Context , value: any ): Promise<void> {
     const accept = ctx.accepts( supportedAccept )
+
     switch ( accept ) {
         case json:
             ctx.type = accept
@@ -21,9 +24,16 @@ export default async function transfer2Accept( ctx: Context , value: any ) {
             ctx.body = typeof value === "object" ? JSON.stringify( value ) : String( value )
             break
         case image: {
-            const key = `${ctx.method} ${ctx.path}` ,
-                moduleId = await findModuleIdWithRequestKey( key )
-            // console.log( moduleId )
+            const [ hasImgFile , imagePath ] = await checkRequestImg( ctx , value )
+            if ( hasImgFile ) {
+                const ext = path.extname( imagePath as string )
+                ctx.type = ext
+                ctx.body = fs.createReadStream( imagePath as string )
+                return
+            }
+            ctx.type = text
+            ctx.status = 404
+            ctx.body = "Not Found. Please define the api in the mock directory"
             break
         }
         case false:
