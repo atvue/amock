@@ -37,5 +37,7 @@ dist/**/*
 
 # 本地测试mock
 mock/**/*
+# 文件上传的临时文件夹
+.cache/
+# Amock的配置文件
 amock.json
-tmp/

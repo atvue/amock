@@ -7,12 +7,19 @@ const json = "application/json" ,
     image = "image/*" ,
     html = "text/html" ,
     text = "text/plain" ,
+    anyMimeType = "*/*" ,
     supportedAccept = [ json , html , text , image ]
 
 
 export default async function transfer2Accept( ctx: Context , value: any ): Promise<void> {
-    const accept = ctx.accepts( supportedAccept )
-
+    const accepts = ctx.accepts() ,
+        priorityJson = Array.isArray( accepts ) && accepts.length === 1 && accepts.includes( anyMimeType )
+    let accept = ctx.accepts( supportedAccept )
+    // 当没有指定accept或者accept为任意类型时，优先json返回
+    if ( priorityJson ) {
+        accept = json
+    }
+    // console.log( priorityJson , accepts , accept )
     switch ( accept ) {
         case json:
             ctx.type = accept
