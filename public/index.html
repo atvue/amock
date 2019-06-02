@@ -8,11 +8,34 @@
         <title>Amock，一个API数据Mock工具</title>
     </head>
     <body>
-        Amock首页
+        <dl>
+          <dt>欢迎使用，Amock!</dt>
+          <dd>
+            Amock，支持resultful api
+          </dd>
+          <dd>
+            支持文件上传，文件下载
+          </dd>
+          <dd>
+            mock图片
+          </dd>
+          <dd>
+            自定义响应,基于koa的request，和response对象
+          </dd>
+          <dd>
+            代理转发
+          </dd>
+          <dd>
+            mock api优先级，基于文件
+          </dd>
+        </dl>
+        <p><img src="/image/a.jpg" /></p>
+        <a href="/download" style="color: blue;" download="aaa.doc">下载doc文件</a>
         <form action="/upload" method="post" enctype="multipart/form-data" id="form-upload" >
             <input type="file" name="file" multiple>
             <input type="submit" value="Upload">
         </form>
+
         <script>
             var form = document.getElementById("form-upload"); //表单
             var file = document.getElementsByName("file")[0];

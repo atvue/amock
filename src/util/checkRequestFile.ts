@@ -6,6 +6,9 @@ import constants from "constants"
 
 
 export default async ( ctx: Context , value: any ): Promise< [ boolean , string? ] > => {
+    if ( value instanceof String ) {
+        value = value.valueOf()
+    }
     const { method , path: requestPath } = ctx ,
         key = `${ method } ${ requestPath }` ,
         moduleId = await findModuleIdWithRequestKey( key ) ,

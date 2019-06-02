@@ -1,7 +1,8 @@
 import { Context } from "koa"
 import path from "path"
 import fs from "fs"
-import checkRequestImg from "./checkRequestImg"
+import checkRequestFile from "./checkRequestFile"
+import { downloadSymbol } from "./download"
 
 const json = "application/json" ,
     image = "image/*" ,
@@ -14,10 +15,14 @@ const json = "application/json" ,
 export default async function transfer2Accept( ctx: Context , value: any ): Promise<void> {
     const accepts = ctx.accepts() ,
         priorityJson = Array.isArray( accepts ) && accepts.length === 1 && accepts.includes( anyMimeType )
-    let accept = ctx.accepts( supportedAccept )
+    let accept: string | boolean | symbol = ctx.accepts( supportedAccept )
     // 当没有指定accept或者accept为任意类型时，优先json返回
     if ( priorityJson ) {
         accept = json
+    }
+    // 检测是否需要下载
+    if ( value && value.type === downloadSymbol ) {
+        accept = downloadSymbol
     }
     // console.log( priorityJson , accepts , accept )
     switch ( accept ) {
@@ -30,12 +35,19 @@ export default async function transfer2Accept( ctx: Context , value: any ): Prom
             ctx.type = accept
             ctx.body = typeof value === "object" ? JSON.stringify( value ) : String( value )
             break
+        case downloadSymbol:
         case image: {
-            const [ hasImgFile , imagePath ] = await checkRequestImg( ctx , value )
-            if ( hasImgFile ) {
-                const ext = path.extname( imagePath as string )
+            const [ hasFile , filePath ] = await checkRequestFile( ctx , value )
+            if ( hasFile ) {
+                const ext = path.extname( filePath as string )
                 ctx.type = ext
-                ctx.body = fs.createReadStream( imagePath as string )
+                ctx.body = fs.createReadStream( filePath as string )
+                if ( accept === downloadSymbol ) {
+                    const { options } = value ,
+                        { base } = path.parse( filePath as string ) ,
+                        filename = ( options && options.filename ) || base
+                    ctx.attachment( filename )
+                }
                 return
             }
             ctx.type = text
