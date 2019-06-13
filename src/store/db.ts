@@ -70,7 +70,7 @@ export const clearCache = () => {
     cache = []
 }
 
-function isApiTheModule( obj: MockValueObj | undefined , key: string ): boolean {
+function isApiInTheModule( obj: MockValueObj | undefined , key?: string ): boolean {
     if ( obj !== undefined && key !== undefined ) {
         return obj.hasOwnProperty( key )
     } else {
@@ -81,8 +81,8 @@ function isApiTheModule( obj: MockValueObj | undefined , key: string ): boolean 
 export const findModuleIdWithRequestKey = ( reqeustKey: string ): string | undefined => {
     for ( const module of cache ) {
         const { moduleId , api } = module ,
-            isApiInTheModule = isApiTheModule( api , reqeustKey )
-        if ( isApiInTheModule ) {
+            has = isApiInTheModule( api , reqeustKey )
+        if ( has ) {
             return moduleId
         }
     }

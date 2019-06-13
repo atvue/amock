@@ -1,8 +1,10 @@
 import Koa from "koa"
+import http from "http"
 import { initGetCacheAndWatchDir } from "./store/setup"
 import { getConfig } from "./config"
 import mapMockApi from "./middleware/map-mock-api"
 import setServerHeader from "./middleware/set-server-header"
+import checkIfNeedProxy from "./middleware/check-if-need-proxy"
 import cacheControl from "./middleware/cache-control"
 import KoaBody from "koa-body"
 import KoaStatic from "koa-static"
@@ -38,10 +40,13 @@ const server = async () => {
         ) )
     } )
 
-    const url = `http://localhost:${port}`
-    app.listen( port , () => {
+    const localUrl = `http://localhost:${port}` ,
+        callback = app.callback()
+
+    const server = http.createServer( checkIfNeedProxy( callback ) )
+    server.listen( port , () => {
         console.log(
-            chalk.green( `Amock启动成功，请访问：${url}` )
+            chalk.green( `Amock启动成功，请访问：${ localUrl }` )
         )
     } )
 }

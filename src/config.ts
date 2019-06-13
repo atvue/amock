@@ -2,10 +2,12 @@ import paths from "./paths"
 import path from "path"
 import { fileExist } from "./util/file"
 import { merge } from "lodash"
+import requireUncached from "./util/require-uncached"
 export interface Config {
     port?: number
     baseUrl: string
     paths: string[]
+    proxy?: any[]
 }
 interface GetConfig {
     (): Promise<Config> | Config
@@ -29,6 +31,18 @@ export const getConfig: GetConfig = async () => {
         return calcConfig
     } catch ( e ) {
         console.warn( e )
+        return defaultConfig
+    }
+}
+
+export const getConfigSync: () => Config = () => {
+    const configPath = path.resolve( appDirectory , configFile ) ,
+        defaultConfig = getDefaultConfig()
+    try {
+        const config = requireUncached( configPath ) ,
+            calcConfig = merge( {} , defaultConfig , config )
+        return calcConfig
+    } catch ( e ) {
         return defaultConfig
     }
 }
