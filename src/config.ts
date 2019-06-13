@@ -30,19 +30,7 @@ export const getConfig: GetConfig = async () => {
             calcConfig = merge( {} , defaultConfig , config )
         return calcConfig
     } catch ( e ) {
-        // console.warn( e )
-        return defaultConfig
-    }
-}
-
-export const getConfigSync: () => Config = () => {
-    const configPath = path.resolve( appDirectory , configFile ) ,
-        defaultConfig = getDefaultConfig()
-    try {
-        const config = requireUncached( configPath ) ,
-            calcConfig = merge( {} , defaultConfig , config )
-        return calcConfig
-    } catch ( e ) {
+        console.warn( e )
         return defaultConfig
     }
 }

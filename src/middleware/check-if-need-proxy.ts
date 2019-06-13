@@ -4,7 +4,7 @@ import { findModuleIdWithRequestKey } from "../store/db"
 import proxy from "http-proxy-middleware"
 import chalk from "chalk"
 import http from "http"
-import { getConfigSync } from "../config"
+import { getConfig } from "../config"
 
 type ProxyResFunc = (proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse) => void
 
@@ -18,8 +18,8 @@ const ReservedRequest = [ `GET /` , `GET /favicon.ico` ] ,
     }
 
 
-export default ( callback: RequestListener ): RequestListener => {
-    const { proxy: proxyArgs } = getConfigSync() ,
+export default async ( callback: RequestListener ): Promise<RequestListener> => {
+    const { proxy: proxyArgs } = await getConfig() ,
         hasProxy = proxyArgs !== undefined && proxyArgs.length > 0
     if ( hasProxy ) {
         const proxyOptions = proxyArgs ? proxyArgs[ 1 ] : undefined

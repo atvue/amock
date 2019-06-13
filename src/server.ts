@@ -41,9 +41,10 @@ const server = async () => {
     } )
 
     const localUrl = `http://localhost:${port}` ,
-        callback = app.callback()
+        callback = app.callback() ,
+        middleware = await checkIfNeedProxy( callback )
 
-    const server = http.createServer( checkIfNeedProxy( callback ) )
+    const server = http.createServer( middleware )
     server.listen( port , () => {
         console.log(
             chalk.green( `Amock启动成功，请访问：${ localUrl }` )
