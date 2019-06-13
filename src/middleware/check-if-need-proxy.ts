@@ -5,6 +5,7 @@ import proxy from "http-proxy-middleware"
 import chalk from "chalk"
 import http from "http"
 import { getConfig } from "../config"
+import { ServerName } from "../util/keys"
 
 type ProxyResFunc = (proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse) => void
 
@@ -43,7 +44,17 @@ export default async ( callback: RequestListener ): Promise<RequestListener> => 
                     reserved = ReservedRequest.includes( requestPath ) ,
                     notReserved = !reserved
                 if ( noDefinedApi && notReserved ) {
-                    return middleware( req , res , () => { throw new Error( `next 需要处理` ) } )
+                    return middleware( req , res , () => {
+                        console.log(
+                            chalk.red( `proxy to: ${ requestPath } , failed` )
+                        )
+                        res.writeHead( 404 , {
+                            [ `Content-Type` ]: `text/plain; charset=utf-8` ,
+                            [ `Server` ]: ServerName ,
+                        } )
+                        res.write( `Not Found` )
+                        res.end()
+                    } )
                 }
             }
             callback( req , res )
