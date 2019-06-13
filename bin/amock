@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+const { server } = require( "../dist/index" )
+const chalk = require( "chalk" )
+
+
+server().catch( error => {
+    console.warn(
+        chalk.red( error )
+    )
+} )

@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
+  "bin": {
+    "amock": "./bin/amock"
+  },
   "scripts": {
     "start": "npm run watch-debug",
     "serve": "node dist/index.js",

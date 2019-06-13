@@ -30,7 +30,7 @@ export const getConfig: GetConfig = async () => {
             calcConfig = merge( {} , defaultConfig , config )
         return calcConfig
     } catch ( e ) {
-        console.warn( e )
+        // console.warn( e )
         return defaultConfig
     }
 }
