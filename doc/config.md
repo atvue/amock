@@ -8,7 +8,7 @@ module.exports = {
     // mock数据的根目录，默认当前目录
     "baseUrl": "." ,
     // mock文件夹，根据baseUrl查找，可绝对路劲
-    "paths": [ "./mock" , "/Users/maotingfeng/github/amock/mock2" ] ,
+    "paths": [ "./mock" , "/Users/xxx/desktop/mock2" ] ,
     // 代理配置，基于http-proxy-middle
     "proxy": [
         [

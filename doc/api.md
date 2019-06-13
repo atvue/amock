@@ -7,7 +7,7 @@
 const path = require( "path" )
 const fs = require( "fs" )
 // mock下载文件的包装器
-const { download } = require( "../dist/index" )
+const { download } = require( "amock" )
 
 
 module.exports = {

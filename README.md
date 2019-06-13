@@ -8,11 +8,12 @@
 - 支持`mock.js`工作流
 - 支持代理转发,基于`http-proxy-middleware`
 - 支持自定义响应消息
+- 支持现有nei mock项目
 
 ### 如何使用？
 
 - 安装`yarn add @atvue/amock`
-- 项目目录下配置`amock.js`配置项
+- 项目目录下配置`amockrc.js`配置项
     ```javascript
     // example
     module.exports = {
