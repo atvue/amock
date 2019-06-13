@@ -2,7 +2,7 @@ import { Context } from "koa"
 import path from "path"
 import fs from "fs"
 import checkRequestFile from "./checkRequestFile"
-import { downloadSymbol } from "./download"
+import { DownloadSymbol } from "./download"
 
 const json = "application/json" ,
     image = "image/*" ,
@@ -21,8 +21,8 @@ export default async function transfer2Accept( ctx: Context , value: any ): Prom
         accept = json
     }
     // 检测是否需要下载
-    if ( value && value.type === downloadSymbol ) {
-        accept = downloadSymbol
+    if ( value && value.type === DownloadSymbol ) {
+        accept = DownloadSymbol
     }
     // console.log( priorityJson , accepts , accept )
     switch ( accept ) {
@@ -35,14 +35,14 @@ export default async function transfer2Accept( ctx: Context , value: any ): Prom
             ctx.type = accept
             ctx.body = typeof value === "object" ? JSON.stringify( value ) : String( value )
             break
-        case downloadSymbol:
+        case DownloadSymbol:
         case image: {
             const [ hasFile , filePath ] = await checkRequestFile( ctx , value )
             if ( hasFile ) {
                 const ext = path.extname( filePath as string )
                 ctx.type = ext
                 ctx.body = fs.createReadStream( filePath as string )
-                if ( accept === downloadSymbol ) {
+                if ( accept === DownloadSymbol ) {
                     const { options } = value ,
                         { base } = path.parse( filePath as string ) ,
                         filename = ( options && options.filename ) || base
@@ -52,7 +52,7 @@ export default async function transfer2Accept( ctx: Context , value: any ): Prom
             }
             ctx.type = text
             ctx.status = 404
-            ctx.body = "Not Found. Please define the api in the mock directory"
+            ctx.body = "Not Found. Please check the api in the mock directory"
             break
         }
         case false:

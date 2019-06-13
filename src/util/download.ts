@@ -1,5 +1,5 @@
 
-export const downloadSymbol = Symbol( "type for download" )
+export const DownloadSymbol = Symbol( "type for download" )
 
 interface Options {
     filename?: string ,
@@ -8,7 +8,7 @@ interface Options {
 function download( path: string , options?: Options ): String {
     const strObj = new String( path )
     Object.assign( strObj , {
-        type: downloadSymbol ,
+        type: DownloadSymbol ,
         options ,
     } )
     return strObj
