@@ -11,6 +11,7 @@ export default () => {
         if ( hasDefinedApi ) {
             const type = typeof value
             switch ( type ) {
+                case "number":
                 case "undefined":
                 case "string":
                 case "object":
