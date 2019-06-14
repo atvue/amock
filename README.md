@@ -12,7 +12,7 @@
 
 ### 如何使用？
 
-- 安装`yarn add @atvue/amock`
+- 安装`yarn add @bview/amock`
 - 项目目录下配置`amockrc.js`配置项
     ```javascript
     // example
