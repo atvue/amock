@@ -32,6 +32,7 @@
         <form action="/upload" method="post" enctype="multipart/form-data" id="form-upload" >
             <input type="file" name="file" multiple>
             <input type="submit" value="Upload">
+            需要预先定义: { 'POST /upload': xxx }  接口，xxx为任意响应内容,如：{ code: 200 }
         </form>
 
         <script>
