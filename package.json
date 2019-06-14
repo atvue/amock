@@ -1,6 +1,6 @@
 {
   "name": "@bview/amock",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/index.js",
   "bin": {
@@ -46,9 +46,9 @@
     "typescript": "^3.4.5"
   } ,
   "files": [
-    "./dist" ,
-    "./public" ,
-    "./bin" ,
-    "./doc"
+    "dist" ,
+    "public" ,
+    "bin" ,
+    "doc"
   ]
 }
