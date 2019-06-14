@@ -7,6 +7,7 @@ import requireUncached from "../util/require-uncached"
 import { isPlainObject } from "lodash"
 import { ENOENT } from "constants"
 import chalk from "chalk"
+import log from "../util/log"
 
 
 /**
@@ -94,10 +95,8 @@ const recursiveDir: RecursiveDir = async ( dir: string ) => {
         }
     } catch ( e ) {
         if ( Math.abs( e.errno ) === ENOENT ) {
-            const { path } = e
-            console.log(
-                chalk.red( `mock目录不存在：` , chalk.underline( path ) )
-            )
+            // const { path } = e
+            // log.warn( `mock目录不存在` , chalk.underline( path ) )
         } else {
             throw e
         }
