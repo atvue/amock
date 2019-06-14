@@ -26,7 +26,16 @@
         'GET /hello': { "hello": "world!" } ,
     }
     ```
-- 启动：`npm run amock`，访问：`http://localhost:8002/hello`
+- 在`scripts`定义amock命令
+    ```json
+    {
+        "scripts": {
+            "start": "yarn start" ,
+            "amock": "amock"
+        }
+    }
+    ```
+    启动：`yarn amock`，访问：`http://localhost:8002/hello`
 
 
 ### 配置说明
