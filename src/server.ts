@@ -13,6 +13,7 @@ import path from "path"
 import createUploadDir from "./util/create-upload-dir"
 import chalk from "chalk"
 import { ServerName } from "./util/keys"
+import log from "./util/log"
 
 const { amockRoot , uploadDir } = paths
 
@@ -36,9 +37,7 @@ const server = async () => {
     app.use( KoaStatic( publicPath ) )
 
     app.on( "error" , ( err , ctx ) => {
-        console.warn( chalk.red (
-            "Amock Server Error" , err
-        ) )
+        log.warn( "Amock Server Error" , err )
     } )
 
     const localUrl = `http://localhost:${port}` ,
@@ -47,9 +46,7 @@ const server = async () => {
 
     const server = http.createServer( middleware )
     server.listen( port , () => {
-        console.log(
-            chalk.green( `Amock:启动成功，请访问：${ localUrl }` )
-        )
+        log.success( `启动成功，请访问：${ localUrl }` )
     } )
 }
 
