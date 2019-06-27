@@ -1,54 +1,56 @@
 {
-  "name": "@bview/amock",
-  "version": "0.0.10",
-  "description": "",
-  "main": "dist/index.js",
-  "bin": {
-    "amock": "./bin/amock"
-  },
-  "scripts": {
-    "start": "npm run watch-debug",
-    "serve": "node dist/index.js",
-    "build": "npm run build-ts && npm run tslint",
-    "build-ts": "tsc",
-    "watch-ts": "tsc -w",
-    "watch-node": "nodemon dist/index.js",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
-    "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "serve-debug": "nodemon --inspect ./bin/amock",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
-  },
-  "author": "atvue",
-  "license": "ISC",
-  "engines": {
-    "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
-  },
-  "dependencies": {
-    "@types/fs-extra": "^7.0.0",
-    "@types/http-proxy-middleware": "^0.19.2",
-    "@types/klaw": "^3.0.0",
-    "@types/koa": "^2.0.48",
-    "@types/koa-static": "^4.0.1",
-    "@types/lodash": "^4.14.132",
-    "@types/node": "^12.0.2",
-    "chalk": "^2.4.2",
-    "chokidar": "^3.0.0",
-    "concurrently": "^4.1.0",
-    "fs-extra": "^8.0.1",
-    "http-proxy-middleware": "^0.19.1",
-    "klaw": "^3.0.0",
-    "koa": "^2.7.0",
-    "koa-body": "^4.1.0",
-    "koa-static": "^5.0.0",
-    "lodash": "^4.17.11",
-    "nodemon": "^1.19.1",
-    "tslint": "^5.16.0",
-    "typescript": "^3.4.5"
-  },
-  "files": [
-    "dist",
-    "public",
-    "bin",
-    "doc"
-  ]
+    "name": "@bview/amock",
+    "version": "0.0.10",
+    "description": "",
+    "main": "dist/index.js",
+    "bin": {
+        "amock": "./bin/amock"
+    },
+    "scripts": {
+        "start": "npm run watch-debug",
+        "serve": "node dist/index.js",
+        "build": "npm run build-ts && npm run tslint",
+        "build-ts": "tsc",
+        "watch-ts": "tsc -w",
+        "watch-node": "nodemon dist/index.js",
+        "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+        "tslint": "tslint -c tslint.json -p tsconfig.json",
+        "serve-debug": "nodemon --inspect ./bin/amock",
+        "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+    },
+    "author": "atvue",
+    "license": "ISC",
+    "engines": {
+        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
+    },
+    "dependencies": {
+        "chalk": "^2.4.2",
+        "chokidar": "^3.0.0",
+        "fs-extra": "^8.0.1",
+        "http-proxy-middleware": "^0.19.1",
+        "klaw": "^3.0.0",
+        "koa": "^2.7.0",
+        "koa-body": "^4.1.0",
+        "koa-static": "^5.0.0",
+        "lodash": "^4.17.11"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^7.0.0",
+        "@types/http-proxy-middleware": "^0.19.2",
+        "@types/klaw": "^3.0.0",
+        "@types/koa": "^2.0.48",
+        "@types/koa-static": "^4.0.1",
+        "@types/lodash": "^4.14.132",
+        "@types/node": "^12.0.2",
+        "typescript": "^3.4.5" ,
+        "tslint": "^5.16.0" ,
+        "concurrently": "^4.1.0",
+        "nodemon": "^1.19.1"
+    },
+    "files": [
+        "dist",
+        "public",
+        "bin",
+        "doc"
+    ]
 }

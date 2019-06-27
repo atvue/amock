@@ -13,29 +13,13 @@
 ### 如何使用？
 
 - 安装`yarn add @bview/amock`
-- 项目目录下配置`amockrc.js`配置项
-    ```javascript
-    // example
-    module.exports = {
-        "port": 8002 ,
-    }
-    ```
 - 根目录下新建`mock`目录，在其中新建任一js文件，比如`index.js`。内容如下：
     ```javascript
     module.exports = {
         'GET /hello': { "hello": "world!" } ,
     }
     ```
-- 在`scripts`定义amock命令
-    ```json
-    {
-        "scripts": {
-            "start": "yarn start" ,
-            "amock": "amock"
-        }
-    }
-    ```
-    启动：`yarn amock`，访问：`http://localhost:8002/hello`
+- 启动：`yarn amock`，访问：`http://localhost:8002/hello`
 
 
 ### 配置说明

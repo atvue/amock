@@ -1,6 +1,10 @@
 
 ### `amock.js`配置项目说明
 
+项目目录下新增`amockrc.js`配置文件
+
+
+### 完整配置项如下：
 ```javascript
 module.exports = {
     // Amock服务的端口，默认 8002
