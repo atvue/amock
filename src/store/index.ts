@@ -8,11 +8,11 @@ import { isPlainObject } from "lodash"
 import { ENOENT } from "constants"
 import madge from "madge"
 import madgeConfig from "../util/madgeConfig"
-
+import { checkIfAmockFile } from "../util/checkIfAmockFile"
 
 /**
  * 模型： { modlePath: { ...// mock api } }
- * [ { module: '' , api: {  } } ]
+ * [ { module: '' , api: {  } , deps: undefined } ]
  */
 const { appDirectory } = paths
 interface GetMockDirs {
@@ -85,12 +85,16 @@ const recursiveDir: RecursiveDir = async ( dir: string ) => {
             const files = await walker( dir ) ,
                 modules = []
             for ( const filePath of files ) {
+                const isAmockFile = checkIfAmockFile( filePath )
+                if ( !isAmockFile ) {
+                    continue
+                }
                 const moduleStruc: MockModule = {
                         moduleId: filePath ,
                         api: undefined ,
                         deps: undefined ,
                     }
-                const defaultExports = requireUncached( filePath ) ,
+                const defaultExports = require( filePath ) ,
                     deps = ( await madge( filePath , madgeConfig ) ).obj() ,
                     filePathSub = path.relative( appDirectory , filePath ) ,
                     hasDeps = deps[ filePathSub ] && deps[ filePathSub ].length > 0 ,

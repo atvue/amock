@@ -3,6 +3,7 @@ import path from "path"
 import { appDirectory } from "../paths"
 import madge from "madge"
 import madgeConfig from "../util/madgeConfig"
+import { checkIfAmockFile } from "../util/checkIfAmockFile"
 
 export let cache: MockModule[] = []
 
@@ -40,21 +41,25 @@ export const refreshCache: () => void = async () => {
 }
 
 export const updateCache = async ( filePath: string , mockItem?: MockValueObj ) => {
-    const targetModule = findTargetModule( filePath ) ,
-        deps = ( await madge( filePath , madgeConfig ) ).obj() ,
-        filePathSub = path.relative( appDirectory , filePath ) ,
-        hasDeps = deps[ filePathSub ] && deps[ filePathSub ].length > 0
-
-    if ( targetModule ) {
-        targetModule.api = mockItem
-        targetModule.deps = hasDeps ? deps : undefined
-    } else {
-        const newMock: MockModule = {
-            moduleId: filePath ,
-            api: mockItem ,
-            deps: hasDeps ? deps : undefined ,
+    const isAmockFile = checkIfAmockFile( filePath )
+    if ( isAmockFile ) {
+        const targetModule = findTargetModule( filePath ) ,
+            deps = ( await madge( filePath , madgeConfig ) ).obj() ,
+            filePathSub = path.relative( appDirectory , filePath ) ,
+            hasDeps = deps[ filePathSub ] && deps[ filePathSub ].length > 0
+        if ( targetModule ) {
+            targetModule.api = mockItem
+            targetModule.deps = hasDeps ? deps : undefined
+        } else {
+            const newMock: MockModule = {
+                moduleId: filePath ,
+                api: mockItem ,
+                deps: hasDeps ? deps : undefined ,
+            }
+            cache.push( newMock )
         }
-        cache.push( newMock )
+    } else {
+        delCache( filePath )
     }
 }
 

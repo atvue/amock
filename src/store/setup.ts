@@ -3,7 +3,7 @@ import { getMockDirs , getJSFileDefaultExports } from "./index"
 import chokidar from "chokidar"
 import { Stats } from "fs"
 import diffKeys from "../util/diffKeys"
-import requireUncached from "../util/require-uncached"
+// import requireUncached from "../util/require-uncached"
 
 
 export const initGetCacheAndWatchDir = async function initGetCacheAndWatchDir() {
@@ -26,7 +26,6 @@ async function watchFile( path: string , stats?: Stats ) {
 
 function delFile ( path: string ) {
     delCache( path )
-    requireUncached( path )
 }
 
 async function watchMockDirs() {
