@@ -24,10 +24,14 @@
         "node": "^4.8.4 || ^6.10.1 || ^7.10.1 || >= 8.1.4"
     },
     "dependencies": {
+        "@types/inquirer": "^6.0.3",
         "chalk": "^2.4.2",
         "chokidar": "^3.0.0",
+        "detect-port-alt": "^1.1.6",
         "fs-extra": "^8.0.1",
         "http-proxy-middleware": "^0.19.1",
+        "inquirer": "^6.4.1",
+        "is-root": "^2.1.0",
         "klaw": "^3.0.0",
         "koa": "^2.7.0",
         "koa-body": "^4.1.0",

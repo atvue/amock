@@ -14,6 +14,7 @@ import createUploadDir from "./util/create-upload-dir"
 import chalk from "chalk"
 import { ServerName } from "./util/keys"
 import log from "./util/log"
+import choosePort from "./util/choosePort"
 
 const { amockRoot , uploadDir } = paths
 
@@ -40,13 +41,22 @@ const server = async () => {
         log.warn( "Amock Server Error" , err )
     } )
 
-    const localUrl = `http://localhost:${port}` ,
+    const host = "localhost" ,
         callback = app.callback() ,
-        middleware = await checkIfNeedProxy( callback )
+        middleware = await checkIfNeedProxy( callback ) ,
+        defaultPort = port === undefined || port === null ? 8002 : port
 
-    const server = http.createServer( middleware )
-    server.listen( port , () => {
-        log.success( `启动成功，请访问：${ localUrl }` )
+    choosePort( host , defaultPort )
+    .then( ( port?: number ) => {
+        if ( port ) {
+            const server = http.createServer( middleware )
+            server.listen( port , () => {
+                const localUrl = `http://${host}:${port}`
+                log.success( `启动成功，请访问：${ localUrl }` )
+            } )
+        } else {
+            process.exit( 0 )
+        }
     } )
 }
 

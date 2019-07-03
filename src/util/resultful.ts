@@ -11,7 +11,7 @@ enum Methods {
 export const methods = Object.keys( Methods )
 
 
-export const ifStartWithRestfulMethod = ( maybeUrl: string ): Boolean => {
+export const ifStartWithRestfulMethod = ( maybeUrl: string ): boolean => {
     return isString( maybeUrl ) ? (
         methods.some( method => maybeUrl.toUpperCase().startsWith( `${method}\u{20}` ) )
     ) : false
