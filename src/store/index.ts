@@ -6,8 +6,8 @@ import { Stats } from "fs"
 import requireUncached from "../util/require-uncached"
 import { isPlainObject } from "lodash"
 import { ENOENT } from "constants"
-import chalk from "chalk"
-import log from "../util/log"
+import madge from "madge"
+import madgeConfig from "../util/madgeConfig"
 
 
 /**
@@ -29,6 +29,9 @@ export interface MockValueObj {
 export interface MockModule {
     moduleId: string
     api?: MockValueObj
+    deps?: {
+        [key: string]: any
+    }
 }
 
 interface RecursiveDir {
@@ -85,9 +88,16 @@ const recursiveDir: RecursiveDir = async ( dir: string ) => {
                 const moduleStruc: MockModule = {
                         moduleId: filePath ,
                         api: undefined ,
+                        deps: undefined ,
                     }
                 const defaultExports = requireUncached( filePath ) ,
+                    deps = ( await madge( filePath , madgeConfig ) ).obj() ,
+                    filePathSub = path.relative( appDirectory , filePath ) ,
+                    hasDeps = deps[ filePathSub ] && deps[ filePathSub ].length > 0 ,
                     api = isPlainObject( defaultExports ) ? defaultExports : undefined
+                if ( hasDeps ) {
+                    Object.assign( moduleStruc , { deps } )
+                }
                 Object.assign( moduleStruc , { api } )
                 modules.push( moduleStruc )
             }

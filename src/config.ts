@@ -3,7 +3,6 @@ import path from "path"
 import { fileExist } from "./util/file"
 import { merge } from "lodash"
 import constants from "constants"
-import chalk from "chalk"
 import log from "./util/log"
 
 export interface Config {

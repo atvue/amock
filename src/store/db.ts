@@ -1,4 +1,8 @@
 import { MockModule , getStore , MockValueObj } from "./index"
+import path from "path"
+import { appDirectory } from "../paths"
+import madge from "madge"
+import madgeConfig from "../util/madgeConfig"
 
 export let cache: MockModule[] = []
 
@@ -35,14 +39,20 @@ export const refreshCache: () => void = async () => {
     cache = obj
 }
 
-export const updateCache = ( path: string , mockItem?: MockValueObj ) => {
-    const targetModule = findTargetModule( path )
+export const updateCache = async ( filePath: string , mockItem?: MockValueObj ) => {
+    const targetModule = findTargetModule( filePath ) ,
+        deps = ( await madge( filePath , madgeConfig ) ).obj() ,
+        filePathSub = path.relative( appDirectory , filePath ) ,
+        hasDeps = deps[ filePathSub ] && deps[ filePathSub ].length > 0
+
     if ( targetModule ) {
         targetModule.api = mockItem
+        targetModule.deps = hasDeps ? deps : undefined
     } else {
         const newMock: MockModule = {
-            moduleId: path ,
-            api: mockItem
+            moduleId: filePath ,
+            api: mockItem ,
+            deps: hasDeps ? deps : undefined ,
         }
         cache.push( newMock )
     }
@@ -87,4 +97,25 @@ export const findModuleIdWithRequestKey = ( reqeustKey: string ): string | undef
         }
     }
     return undefined
+}
+
+// 获取依赖当前模块的模块
+export const getModulesBeDepended = ( filePath: string ): Array<string> => {
+    const arr: Array<string> = []
+    const subPath = path.relative( appDirectory , filePath )
+    for ( const item of cache ) {
+        const { moduleId , deps } = item ,
+            hasDeps = deps !== undefined ,
+            self = moduleId === filePath
+        if ( self ) {
+            continue
+        }
+        if ( hasDeps ) {
+            const inDeps = ( deps as object ).hasOwnProperty( subPath )
+            if ( inDeps ) {
+                arr.push( moduleId )
+            }
+        }
+    }
+    return arr
 }
