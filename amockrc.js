@@ -1,7 +1,7 @@
 
 
 module.exports = {
-    "port": 8002 ,
+    "port": 8003 ,
     "baseUrl": "." ,
     "paths": [ "./mock" , "/Users/maotingfeng/github/amock/mock2" ] ,
     "proxy": [

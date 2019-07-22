@@ -18,7 +18,7 @@ export default () => {
                     await transfer2Accept( ctx , value )
                     break
                 case "function":
-                    await ( value as Function )( request , response )
+                    await ( value as Function )( request , response , ctx )
                     break
             }
             return
